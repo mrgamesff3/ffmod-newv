@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<title>نفذ الشروط</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+* { box-sizing: border-box; margin:0; padding:0; }
+body {
+  font-family: 'Tahoma', sans-serif;
+  background: linear-gradient(270deg, #0a0a0a, #2b0040, #4b0082, #0a0a0a);
+  background-size: 800% 800%;
+  animation: gradientBG 20s ease infinite;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding: 0;
+}
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.page-container {
+  width: 100%;
+  max-width: 600px;
+  background: rgba(0,0,0,0.75);
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 0 35px #cc33ff, 0 0 60px #9933ff inset;
+  animation: glow 3s ease-in-out infinite alternate;
+}
+@keyframes glow {
+  0% { box-shadow: 0 0 25px #cc33ff, 0 0 50px #9933ff inset; }
+  50% { box-shadow: 0 0 45px #ff66ff, 0 0 80px #cc33ff inset; }
+  100% { box-shadow: 0 0 25px #cc33ff, 0 0 50px #9933ff inset; }
+}
+
+.top-image-container {
+  width: 100%;
+  height: auto;
+  max-height: 50vh;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  box-shadow: 0 0 25px #cc33ff, 0 0 35px #ff66ff inset;
+  animation: pulse 2s infinite alternate;
+}
+
+.top-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+h2 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #cc66ff;
+  text-shadow: 0 0 10px #ff99ff, 0 0 20px #cc33ff;
+  text-align: center;
+  animation: flicker 2s infinite;
+}
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity:1; }
+  20%, 22%, 24%, 55% { opacity:0.3; }
+}
+
+.progress-container {
+  width: 100%;
+  height: 22px;
+  background-color: #222;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 15px #cc33ff, 0 0 25px #ff66ff inset;
+  margin-bottom: 25px;
+}
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #cc33ff, #ff66ff, #ff99ff);
+  transition: width 0.5s ease;
+  border-radius: 12px;
+  animation: progressGlow 2s infinite alternate;
+}
+@keyframes progressGlow {
+  0% { box-shadow: 0 0 10px #cc33ff, 0 0 15px #ff66ff inset; }
+  100% { box-shadow: 0 0 20px #ff66ff, 0 0 30px #ff99ff inset; }
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #111a;
+  border: 2px solid #444;
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin: 12px auto;
+  width: 100%;
+  max-width: 100%;
+  box-shadow: 0 0 12px #cc33ff, 0 0 15px #ff66ff inset;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px);
+  transition: 0.5s ease, box-shadow 1s, transform 0.2s ease;
+  font-size: 17px;
+}
+
+.step.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.step.completed { border-color: #66ffcc; background-color: #141414dd; box-shadow: 0 0 20px #66ffcc; }
+
+.step span { text-align: right; font-size: inherit; }
+.check { font-size: 22px; animation: blink 1.5s infinite; transition: transform 0.2s ease; }
+
+@keyframes blink {
+  0%, 50%, 100% { opacity:1; }
+  25%, 75% { opacity:0.3; }
+}
+
+a { color: white; text-decoration: none; display: flex; align-items: center; width: 100%; justify-content: space-between; }
+
+.loading {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 3px solid #fff;
+  border-top: 3px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.final-section { margin-top: 25px; }
+.final-message { font-size: 18px; margin-bottom: 12px; color: #ff99ff; text-shadow: 0 0 8px #ff99ff; text-align: center; animation: flicker 2s infinite; }
+
+.final-buttons {
+  background: #111c;
+  border-radius: 14px;
+  border: 2px solid #444;
+  padding: 12px 10px;
+  width: 100%;
+  box-shadow: 0 0 18px #cc33ff, 0 0 25px #ff66ff inset;
+}
+.final-buttons a {
+  display: block;
+  background-color: #333;
+  color: white;
+  padding: 14px;
+  border-radius: 14px;
+  font-size: 17px;
+  font-weight: bold;
+  margin: 8px auto;
+  pointer-events: none;
+  opacity: 0.5;
+  transition: 0.3s, box-shadow 1s, transform 0.2s ease;
+  box-shadow: 0 0 8px #000;
+  text-align: center;
+  max-width: 100%;
+}
+.final-buttons a.active { background-color: #9933ff; pointer-events: auto; opacity: 1; box-shadow: 0 0 15px #cc66ff; animation: glowBtn 2s infinite alternate; }
+.final-buttons a.btn-guide { background-color: #6600cc !important; }
+.final-buttons a:hover { transform: scale(1.03); }
+
+@keyframes glowBtn {
+  0% { box-shadow: 0 0 10px #cc66ff; }
+  50% { box-shadow: 0 0 20px #ff99ff; }
+  100% { box-shadow: 0 0 10px #cc66ff; }
+}
+
+@media (max-width: 480px) {
+  .top-image-container {
+    height: auto;
+    max-height: 40vh;
+  }
+  .top-image-container img {
+    object-fit: contain;
+  }
+}
+
+/* popup نسخ الرابط */
+#copyPopup {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(204,51,255,0.9);
+  color: #000;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  box-shadow: 0 0 15px #ff99ff;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s;
+  z-index: 9999;
+}
+</style>
+
+</head>
+<body>
+  <div class="page-container">
+    <div class="top-image-container">
+      <img src="https://i.postimg.cc/dVjxptVJ/1.jpg"
+           alt="Free Fire Script" id="mainImage" />
+    </div>
+
+    <h2>نفذ هذه الخطوات أولاً لكي يتم فتح لك روابط التحميل</h2>
+
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div id="step1" class="step active">
+      <a href="#" onclick="completeStep(1, 'https://www.youtube.com/@MRGAMESFF-k3q'); return false;">
+        <span>📺🔔 اضغط هنا وقم بالاشتراك في القناة 1 وتفعيل زر الجرس</span>
+        <span id="check1">➡️</span>
+      </a>
+    </div>
+
+    <div id="step2" class="step">
+      <a href="#" onclick="completeStep(2, 'https://www.youtube.com/@MRGAMESFFV2'); return false;">
+        <span>📺🔔 اضغط هنا وقم بالاشتراك في القناة 2 وتفعيل زر الجرس</span>
+        <span id="check2">➡️</span>
+      </a>
+    </div>   
+
+    <div id="step3" class="step">
+      <a href="#" onclick="completeStep(3); return false;">
+        <span>👍💬 اضغط هنا وقم بعمل لايك وتعليق مميز للفيديو الذي ستراه</span>
+        <span id="check3">➡️</span>
+      </a>
+    </div>
+
+    <div id="step4" class="step">
+      <a href="#" onclick="completeStep(4, 'https://www.youtube.com/@mohammed-vip0'); return false;">
+        <span>📺🔔 اضغط هنا وقم بالاشتراك في القناة 3 وتفعيل زر الجرس</span>
+        <span id="check4">➡️</span>
+      </a>
+    </div>
+
+    <div class="final-section">
+      <div id="finalMessage" class="final-message">❌ نفّذ الخطوات أولاً لكي يتم فتح روابط التحميل</div>
+      <div class="final-buttons">
+        <a id="btnDownload" href="https://linkjust.com/Kdu8sGDh" onclick="goToDownload(); return false;">🔒لتحميل اقوي هكر فري فاير هيدشوت تلقائي + كشف اماكن + ضد الحظر اخر تحديث اضغط هنا</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- popup نسخ الرابط -->
+  <div id="copyPopup">تم نسخ الرابط!</div>
+
+  <script>
+    // باقي السكربت كما هو بدون تغيير أي وظائف
+    document.getElementById("mainImage").addEventListener("contextmenu", function(e){ e.preventDefault(); });
+
+    const STEP_EXPIRY_MS = 365 * 24 * 60 * 60 * 1000;
+    const step3Links = ["https://youtu.be/JSkg5HQc7Gc"];
+    const step3StorageKey = "step3States_v7263263263623828323232323_page82732636237238283283";
+    const step4StorageKey = "step4States_v54566665_page55599955";
+    const stepsStateKey = "stepsState";
+
+    function isStateExpired(savedState) { if(!savedState.timestamp) return true; return Date.now() - savedState.timestamp > STEP_EXPIRY_MS; }
+
+    window.onload = () => {
+      const savedState = JSON.parse(localStorage.getItem(stepsStateKey) || "{}");
+      const step3State = JSON.parse(localStorage.getItem(step3StorageKey) || "{}");
+      const step4State = JSON.parse(localStorage.getItem(step4StorageKey) || "{}");
+
+      if(isStateExpired(savedState)){
+        localStorage.removeItem(stepsStateKey);
+        localStorage.removeItem(step3StorageKey);
+        localStorage.removeItem(step4StorageKey);
+      }
+
+      for(let i=1;i<=2;i++){
+        if(savedState["step"+i]){
+          document.getElementById("step"+i).classList.add("completed");
+          document.getElementById("check"+i).innerText="✅";
+          const nextStep=document.getElementById("step"+(i+1));
+          if(nextStep) nextStep.classList.add("active");
+        }
+      }
+
+      if(savedState.step2) document.getElementById("step3").classList.add("active");
+      if(step3State.completed){
+        document.getElementById("step3").classList.add("completed");
+        document.getElementById("check3").innerText="✅";
+        document.getElementById("step4").classList.add("active");
+      }
+      if(step4State.completed){
+        document.getElementById("step4").classList.add("completed");
+        document.getElementById("check4").innerText="✅";
+      }
+
+      unlockButtons();
+      updateProgressBar();
+
+      let firstIncomplete=null;
+      for(let i=1;i<=4;i++){
+        if(!document.getElementById("step"+i).classList.contains("completed")){
+          firstIncomplete=document.getElementById("step"+i);
+          break;
+        }
+      }
+      if(firstIncomplete){ setTimeout(()=>{ firstIncomplete.scrollIntoView({behavior:"smooth", block:"center"}); },600); }
+    };
+
+    function saveStepState(step){
+      const current=JSON.parse(localStorage.getItem(stepsStateKey) || "{}");
+      current["step"+step]=true;
+      current.timestamp=Date.now();
+      localStorage.setItem(stepsStateKey, JSON.stringify(current));
+    }
+
+    function completeStep(step, url = null) {
+  const check = document.getElementById("check" + step);
+  const stepElement = document.getElementById("step" + step);
+  const alreadyCompleted = stepElement.classList.contains("completed");
+
+  if (step === 3) {
+    const selected = step3Links[Math.floor(Math.random() * step3Links.length)];
+    window.open(selected, "_blank");
+  } else if (url) {
+    window.open(url, "_blank");
+  }
+
+  if (alreadyCompleted) return;
+
+  // عرض الـ spinner
+  check.innerHTML = '<span class="loading"></span>';
+
+  // بعد 10 ثواني اكتمال الخطوة
+  setTimeout(() => {
+    stepElement.classList.add("completed");
+    check.innerText = "✅";
+
+    let nextStep = null;
+
+    if (step === 3) {
+      localStorage.setItem(step3StorageKey, JSON.stringify({ completed: true, timestamp: Date.now() }));
+      nextStep = document.getElementById("step4");
+      if (nextStep) nextStep.classList.add("active");
+    } else if (step === 4) {
+      localStorage.setItem(step4StorageKey, JSON.stringify({ completed: true, timestamp: Date.now() }));
+    } else {
+      saveStepState(step);
+      nextStep = document.getElementById("step" + (step + 1));
+      if (nextStep) nextStep.classList.add("active");
+    }
+
+    unlockButtons();
+    updateProgressBar();
+
+    if (nextStep) {
+      setTimeout(() => {
+        nextStep.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 500);
+    }
+  }, 10000); // 10 ثواني
+}
+
+
+    function unlockButtons(){
+      const allCompleted=[1,2].every(i=>document.getElementById("step"+i).classList.contains("completed")) &&
+        document.getElementById("step3").classList.contains("completed") &&
+        document.getElementById("step4").classList.contains("completed");
+      if(allCompleted){
+        document.getElementById("finalMessage").innerText="✅ تم تنفيذ كل الخطوات بنجاح";
+        document.getElementById("finalMessage").style.color="lime";
+        document.getElementById("btnDownload").classList.add("active");
+        setTimeout(()=>{ document.getElementById("btnDownload").scrollIntoView({behavior:"smooth", block:"center"}); },800);
+        if(!document.getElementById("btnGuide")){
+          const guideBtn=document.createElement("a");
+          guideBtn.id="btnGuide";
+          guideBtn.href="https://youtu.be/Jlf555kfJMI";
+          guideBtn.target="_blank";
+          guideBtn.className="btn-guide active";
+          guideBtn.innerText="❓ إذا واجهت أي مشكلة في التحميل اضغط هنا";
+          document.querySelector(".final-buttons").appendChild(guideBtn);
+          guideBtn.addEventListener("contextmenu", function(e){ e.preventDefault(); });
+        }
+      }
+    }
+
+    function updateProgressBar(){
+      let done=0;
+      if(document.getElementById("step1").classList.contains("completed")) done++;
+      if(document.getElementById("step2").classList.contains("completed")) done++;
+      if(document.getElementById("step3").classList.contains("completed")) done++;
+      if(document.getElementById("step4").classList.contains("completed")) done++;
+      document.getElementById("progressBar").style.width=(done/4)*100+"%";
+    }
+
+    for(let i=1;i<=4;i++){ document.getElementById("step"+i).addEventListener("contextmenu", function(e){ e.preventDefault(); }); }
+    function goToDownload(){ window.open("https://linkjust.com/Kdu8sGDh","_blank"); }
+
+    const downloadBtn=document.getElementById("btnDownload");
+    const copyPopup=document.getElementById("copyPopup");
+    let pressTimer;
+    function copyLink(){
+      const link=downloadBtn.getAttribute("href");
+      navigator.clipboard.writeText(link).then(()=>{
+        copyPopup.innerText="✅ تم نسخ الرابط: "+link;
+        copyPopup.style.opacity=1;
+        setTimeout(()=>{ copyPopup.style.opacity=0; },2000);
+      }).catch(()=>{
+        copyPopup.innerText="❌ فشل نسخ الرابط، حاول مرة أخرى";
+        copyPopup.style.opacity=1;
+        setTimeout(()=>{ copyPopup.style.opacity=0; },2000);
+      });
+    }
+
+    downloadBtn.addEventListener("contextmenu", function(e){ e.preventDefault(); copyLink(); });
+    downloadBtn.addEventListener("touchstart", function(e){ downloadBtn.style.backgroundColor="#444"; pressTimer=setTimeout(copyLink,1000); });
+    downloadBtn.addEventListener("touchend", function(e){ clearTimeout(pressTimer); downloadBtn.style.backgroundColor=""; });
+    downloadBtn.addEventListener("touchmove", function(e){ clearTimeout(pressTimer); downloadBtn.style.backgroundColor=""; });
+  </script>
+</body>
+</html>
